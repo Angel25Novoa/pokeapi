@@ -11,14 +11,21 @@ app.get('/', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-
+    //Comprobamos credenciales
+    //Si no son validas 403
+    //Si son validas generamos un JWT y lo devolvemos
+    res.status(200).json(
+        {token: 'token_test'}
+    )
 })
 
 app.post('/team/pokemons', () => {
     res.status(200).send('Hello World')
 })
 
-app.get('/team',passport.authenticate('jwt', {session:false}), (req, res) => {
+app.get('/team',
+    passport.authenticate('jwt', {session:false}), 
+    (req, res, next) => {
     res.status(200).send('Hello World')
 })
 
