@@ -1,5 +1,7 @@
 const express = require('express')
 const passport = require('passport')
+const usersController = require('./controllers/users')
+const jwt = require('jsonwebtoken')
 require('./auth')(passport)
 
 const app = express()
@@ -11,12 +13,18 @@ app.get('/', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-    //Comprobamos credenciales
+    usersController.checkUserCredentials(req.body.user, req.body.password, (err, result) => {
+        //Comprobamos credenciales
+        if(!result){
+            return res.status(401).json({'Invalid Credentials'})
+        } //Si no son validas error
+        const token = jwt.sign({userId: req.body.user})
+        res.status(200).json(
+            {token: token}
+        )
+    })
     //Si no son validas 403
     //Si son validas generamos un JWT y lo devolvemos
-    res.status(200).json(
-        {token: 'token_test'}
-    )
 })
 
 app.post('/team/pokemons', () => {
